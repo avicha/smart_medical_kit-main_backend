@@ -1,6 +1,7 @@
 # coding=utf-8
-
-from flask import Flask, redirect, url_for, g, jsonify
+import time
+from flask import Flask, g, request, request_started, request_finished
+import json
 import config
 
 
@@ -20,6 +21,7 @@ def config_log(current_app):
     formatter = logging.Formatter(config.log.format)
     # 为handler添加formatter
     handler.setFormatter(formatter)
+    current_app.config['LOGGER_HANDLER_POLICY'] = 'never'
     # 为logger添加handler
     current_app.logger.addHandler(handler)
     # 设置logger的显示级别
@@ -46,39 +48,34 @@ def config_cache(current_app):
     current_app.cache = cache
 
 
-def load_user(current_app):
-    @current_app.before_request
-    def load_user():
-        from flask import request, g
-        from itsdangerous import TimedJSONWebSignatureSerializer, SignatureExpired, BadSignature
-        from backend_common.models.user import User as UserModel
-        data = request.json or request.form or request.args
-        if data.get('token'):
-            token = data.get('token')
-            s = TimedJSONWebSignatureSerializer(config.server.secret_key)
-            try:
-                user_id = s.loads(token)
-                user = UserModel.get(UserModel.id == user_id, UserModel.deleted_at == None)
-                tokens = user.tokens()
-                if token in tokens:
-                    g.user = user
-                    return None
-                else:
-                    raise UserModel.TokenError('请重新登录')
-            except SignatureExpired:
-                raise UserModel.TokenError('登录已经过期')
-            except BadSignature:
-                raise UserModel.PasswordError()
-            except UserModel.DoesNotExist, e:
-                raise UserModel.NotFoundError('该用户不存在')
-        else:
-            g.user = None
-            return None
-
-
 def config_routes(current_app):
     import controllers.routes
     controllers.routes.init_app(current_app)
+
+
+def log_request(sender, **extra):
+    g._start = time.time()
+    data = request.json or request.form or request.args
+    current_app.logger.info('\n%s "%s %s"，请求参数%s', request.remote_addr.encode('utf-8'), request.method, request.url.encode('utf-8'), json.dumps(data))
+
+
+def log_response(sender, response, **extra):
+    dt = (time.time() - g._start)*1000
+    resp = json.loads(response.response[0])
+    errcode = resp.get('errcode')
+    errmsg = resp.get('errmsg')
+    total_count = resp.get('total_count')
+    result = resp.get('result')
+    if errcode == 0:
+        if total_count != None:
+            current_app.logger.info('耗时%.fms，请求API列表成功，返回结果：%s', dt, total_count)
+        else:
+            current_app.logger.info('耗时%.fms，请求API成功，返回结果：%s', dt, json.dumps(result))
+    else:
+        if errcode == 500:
+            current_app.logger.error('耗时%.fms，发生系统未捕获错误，错误信息：%s', dt, errmsg.encode('utf-8'))
+        else:
+            current_app.logger.error('耗时%.fms，请求业务API出错，返回错误码%s，错误信息：%s', dt, errcode, errmsg.encode('utf-8'))
 
 
 def create_app():
@@ -87,11 +84,13 @@ def create_app():
     config_log(current_app)
     config_errorhandler(current_app)
     config_cache(current_app)
-    load_user(current_app)
     config_routes(current_app)
+    request_started.connect(log_request, current_app)
+    request_finished.connect(log_response, current_app)
     return current_app
 
 current_app = create_app()
+
 
 if __name__ == '__main__':
     current_app.run(config.server.host, config.server.port, config.server.debug, **config.server.options)

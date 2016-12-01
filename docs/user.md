@@ -1,14 +1,9 @@
-一起开工共创官MOOC——用户接口设计
+智能药箱——用户接口设计
 ==========
-API版本
-
--------
-
-0.1版本：2016-10-20，卢炳成
 
 快速参考
 --------
-所有API调用均在/api/user命名空间下，访问域名，正式环境：http://mooc.yi-gather.com，测试环境：http://mooc-dev.yi-gather.com
+所有API调用均在/api/user命名空间下，访问域名，正式环境：http://smart_medical_kit.com，测试环境：http://dev.smart_medical_kit.com
 
 URL|HTTP|功能
 ---|----|----
@@ -38,7 +33,7 @@ sex|number|性别
 phone_number|string|手机号码
 nick|string|昵称
 avatar|string|头像URL
-register_type|number|注册方式
+register_type|number|注册类型
 created_at|date|注册时间
 token|string|令牌token
 
@@ -60,7 +55,7 @@ sex|number|性别
 phone_number|string|手机号码
 nick|string|昵称
 avatar|string|头像URL
-register_type|number|注册方式
+register_type|number|注册类型
 created_at|date|注册时间
 token|string|令牌token
 
@@ -105,7 +100,7 @@ sex|number|性别
 phone_number|string|手机号码
 nick|string|昵称
 avatar|string|头像URL
-register_type|number|注册方式
+register_type|number|注册类型
 created_at|date|注册时间
 
 #### 更新用户信息
