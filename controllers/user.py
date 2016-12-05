@@ -37,7 +37,7 @@ class UserController(BaseController):
                     # 加密密码
                     hash_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
                     # 注册用户
-                    user = UserModel.create(username=phone_number, password=hash_password, phone_number=phone_number, nick=phone_number)
+                    user = UserModel.create(username=phone_number, password=hash_password, phone_number=phone_number, nick=None)
                     # 注册成功顺便登录
                     s = TimedJSONWebSignatureSerializer(current_app.secret_key, expires_in=7*24*60*60)
                     token = s.dumps(user.id)

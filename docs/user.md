@@ -23,7 +23,7 @@ phone_number|string|手机号码
 password|string|密码
 verifycode|string|6位验证码
 
-注册成功result返回用户ID和自动登录的token：
+注册成功，result返回用户ID和自动登录的token：
 
 字段|类型|意义
 ----|----|----
@@ -45,7 +45,7 @@ token|string|令牌token
 username|string|用户名
 password|string|密码
 
-登录成功result返回用户信息：
+登录成功，result返回用户信息：
 
 字段|类型|意义
 ----|----|----
@@ -66,7 +66,7 @@ token|string|令牌token
 ----|----|----
 token|string|令牌token
 
-成功退出登录result返回更新时间：
+成功退出登录，返回errcode=0错误码
 
 字段|类型|意义
 ----|----|----
@@ -81,7 +81,7 @@ old_password|string|旧密码
 new_password|string|新密码
 token|string|令牌token
 
-成功修改则返回errcode=0错误码
+成功修改，返回errcode=0错误码
 
 #### 获取当前用户
 向/current发送GET请求，请求参数如下：
@@ -113,7 +113,7 @@ nick|string|昵称
 avatar|string|头像
 token|string|令牌token
 
-修改成功返回更新时间：
+修改成功，返回更新时间：
 
 字段|类型|意义
 ----|----|----

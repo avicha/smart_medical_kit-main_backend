@@ -7,6 +7,7 @@ class config:
     """服务器配置"""
 
     def __init__(self, mode):
+        self.app_name = env.APP_NAME
         self.host = env.SERVER_HOST
         self.port = env.SERVER_PORT
         self.debug = env.SERVER_DEBUG
