@@ -56,23 +56,18 @@ def config_routes(current_app):
 
 def log_request(sender, **extra):
     g._start = time.time()
-    data = request.json or request.form or request.args
-    current_app.logger.info('\n%s "%s %s"，请求参数%s', request.remote_addr, request.method, request.url.encode('utf-8'), json.dumps(data))
 
 
 def log_response(sender, response, **extra):
-    dt = (time.time() - g._start)*1000
+    g._end = time.time()
+    dt = (g._end - g._start)*1000
+    data = request.json or request.form or request.args
     try:
         resp = json.loads(response.response[0])
         errcode = resp.get('errcode')
         errmsg = resp.get('errmsg')
-        total_count = resp.get('total_count')
-        result = resp.get('result')
         if errcode == 0:
-            if total_count != None:
-                current_app.logger.info('耗时%.fms，请求API列表成功，返回结果：%s', dt, total_count)
-            else:
-                current_app.logger.info('耗时%.fms，请求API成功，返回结果：%s', dt, json.dumps(result))
+            current_app.logger.info('%s "%s %s"，开始请求时间：%s，结束时间：%s，耗时%.fms，请求API成功，请求参数：\n%s', request.remote_addr, request.method, request.url.encode('utf-8'),  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(g._end)), time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(g._start)), dt, json.dumps(data, ensure_ascii=False, sort_keys=True, indent=4, separators=(',', ': ')).encode('utf-8'))
         else:
             if errcode == 500:
                 current_app.logger.error('耗时%.fms，发生系统未捕获错误，错误信息：%s', dt, errmsg.encode('utf-8'))
