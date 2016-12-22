@@ -2,7 +2,6 @@
 import server
 import logger
 import cache
-import env
 from backend_common.config import *
 
 # 服务器配置
