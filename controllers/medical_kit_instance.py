@@ -1,10 +1,10 @@
 # coding=utf-8
 from flask import Blueprint
 
+from backend_common.controllers.medical_kit_instance import MedicalKitInstanceController as MedicalKitInstanceCommonController
 from backend_common.middlewares.request_service import get_request_params
 from backend_common.models.medical_kit import MedicalKit as MedicalKitModel
 from backend_common.models.medical_kit_instance import MedicalKitInstance as MedicalKitInstanceModel
-from backend_common.controllers.medical_kit_instance import MedicalKitInstanceController as MedicalKitInstanceCommonController
 
 medical_kit_instance_blueprint = Blueprint('medical_kit_instance', __name__)
 
