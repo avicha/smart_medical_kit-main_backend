@@ -2,6 +2,7 @@
 from controllers.medical_kit_instance import medical_kit_instance_blueprint, MedicalKitInstanceController
 from controllers.service import service_blueprint, ServiceController
 from controllers.medical import medical_blueprint, MedicalController
+from controllers.medical_kit_instance_setting import medical_kit_instance_setting_blueprint, MedicalKitInstanceSettingController
 
 
 def init_app(current_app):
@@ -14,3 +15,6 @@ def init_app(current_app):
     # 药品
     medical_blueprint.add_url_rule('/scan', 'scan_api', MedicalController.scan, methods=['get'])
     current_app.register_blueprint(medical_blueprint, url_prefix='/api/medical')
+    # 药箱盒子设置
+    medical_kit_instance_setting_blueprint.add_url_rule('/create', 'create_api', MedicalKitInstanceSettingController.create, methods=['post'])
+    current_app.register_blueprint(medical_kit_instance_setting_blueprint, url_prefix='/api/medical_kit_instance_setting')

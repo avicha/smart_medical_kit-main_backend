@@ -17,10 +17,10 @@ class MedicalController(MedicalCommonController):
         barcode = data.get('barcode')
         medical = MedicalModel.select().where(MedicalModel.barcode == barcode).first()
         if medical:
-            result = medical.format()
+            result = medical.format('name,barcode,amount_desc')
             return cls.success_with_result(result)
         else:
             medical_info = MedicalAPI.scan(barcode)
             medical = MedicalModel.create(**medical_info)
-            result = medical.format()
+            result = medical.format('name,barcode,amount_desc')
             return cls.success_with_result(result)
