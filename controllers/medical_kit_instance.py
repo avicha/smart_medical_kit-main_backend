@@ -16,7 +16,7 @@ class MedicalKitInstanceController(MedicalKitInstanceCommonController):
     def get(cls, data):
         medical_kit_instance_id = data.get('medical_kit_instance_id')
         medical_kit_instance_model = MedicalKitInstanceModel(id=medical_kit_instance_id)
-        medical_kit_instance = MedicalKitInstanceModel.select(MedicalKitInstanceModel.id, MedicalKitModel.product_code, MedicalKitModel.name, MedicalKitModel.image, MedicalKitModel.box_count).join(MedicalKitModel, on=(MedicalKitInstanceModel.product_code == MedicalKitModel.product_code)).dicts().first()
+        medical_kit_instance = MedicalKitInstanceModel.select(MedicalKitInstanceModel.id, MedicalKitModel.product_code, MedicalKitModel.name, MedicalKitModel.image, MedicalKitModel.box_count).join(MedicalKitModel, on=(MedicalKitInstanceModel.product_code == MedicalKitModel.product_code)).where(MedicalKitInstanceModel.id == medical_kit_instance_id).dicts().first()
         if medical_kit_instance:
             setting = medical_kit_instance_model.setting()
             box_settings = medical_kit_instance_model.box_settings(medical_kit_instance.get('box_count'))
