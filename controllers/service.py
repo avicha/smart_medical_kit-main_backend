@@ -30,7 +30,7 @@ class ServiceController(ServiceCommonController):
         bucket_name = 'weixin-media-resource'
         key = media_id+'.amr'
         # 设置转码参数
-        fops = 'avthumb/amr/acodec/mp3'
+        fops = 'avthumb/mp3/ab/128k/ar/44100/acodec/libmp3lame'
         # 转码时使用的队列名称
         pipeline = 'weixin_media'
         # 构建鉴权对象

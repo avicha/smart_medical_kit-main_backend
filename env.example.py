@@ -25,3 +25,5 @@ CACHE_REDIS_KEY_PREFIX = 'cache:'
 LOG_FILE_DIR = '../logs'
 LOG_FILE_WHEN = 'midnight'
 LOG_FILE_BACKUP_COUNT = 30
+
+STORAGE_FILE_DIR = '../storage'
