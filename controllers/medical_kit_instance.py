@@ -35,11 +35,22 @@ class MedicalKitInstanceController(MedicalKitInstanceCommonController):
         setting = data.get('setting')
         box_settings = data.get('box_settings')
         with database.transaction():
-            num = MedicalKitInstanceSettingModel.update(prompt_sound=setting.get('prompt_sound')).where(MedicalKitInstanceSettingModel.medical_kit_instance_id == medical_kit_instance_id).execute()
-            if not num:
+            medical_kit_instance_setting = MedicalKitInstanceSettingModel.select().where(MedicalKitInstanceSettingModel.medical_kit_instance_id == medical_kit_instance_id).first()
+            if medical_kit_instance_setting:
+                medical_kit_instance_setting.prompt_sound = setting.get('prompt_sound')
+                medical_kit_instance_setting.save()
+            else:
                 MedicalKitInstanceSettingModel.create(medical_kit_instance_id=medical_kit_instance_id, prompt_sound=setting.get('prompt_sound'))
             for box_setting in box_settings:
-                num = MedicalKitInstanceBoxSettingModel.update(medical_name=box_setting.get('medical_name'), medical_barcode=box_setting.get('medical_barcode'), schedule_times=','.join(box_setting.get('schedule_times')), piece_per_time=box_setting.get('piece_per_time'), unit=box_setting.get('unit')).where(MedicalKitInstanceBoxSettingModel.medical_kit_instance_id == medical_kit_instance_id, MedicalKitInstanceBoxSettingModel.box_index == box_setting.get('box_index')).execute()
-                if not num:
-                    MedicalKitInstanceBoxSettingModel.create(medical_kit_instance_id=medical_kit_instance_id, box_index=box_setting.get('box_index'), medical_name=box_setting.get('medical_name'), medical_barcode=box_setting.get('medical_barcode'), schedule_times=','.join(box_setting.get('schedule_times')), piece_per_time=box_setting.get('piece_per_time'), unit=box_setting.get('unit'))
+                if len(box_setting.get('schedule_times')):
+                    medical_kit_instance_box_setting = MedicalKitInstanceBoxSettingModel.select().where(MedicalKitInstanceBoxSettingModel.medical_kit_instance_id == medical_kit_instance_id, MedicalKitInstanceBoxSettingModel.box_index == box_setting.get('box_index')).first()
+                    if medical_kit_instance_box_setting:
+                        medical_kit_instance_box_setting.medical_name = box_setting.get('medical_name')
+                        medical_kit_instance_box_setting.medical_barcode = box_setting.get('medical_barcode')
+                        medical_kit_instance_box_setting.schedule_times = ','.join(box_setting.get('schedule_times'))
+                        medical_kit_instance_box_setting.piece_per_time = box_setting.get('piece_per_time')
+                        medical_kit_instance_box_setting.unit = box_setting.get('unit')
+                        medical_kit_instance_box_setting.save()
+                    else:
+                        MedicalKitInstanceBoxSettingModel.create(medical_kit_instance_id=medical_kit_instance_id, box_index=box_setting.get('box_index'), medical_name=box_setting.get('medical_name'), medical_barcode=box_setting.get('medical_barcode'), schedule_times=','.join(box_setting.get('schedule_times')), piece_per_time=box_setting.get('piece_per_time'), unit=box_setting.get('unit'))
             return cls.success_with_result(None)
