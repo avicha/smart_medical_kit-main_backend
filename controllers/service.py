@@ -47,4 +47,4 @@ class ServiceController(ServiceCommonController):
         token = q.upload_token(bucket_name, key, 3600, policy)
         ret, info = put_file(token, key, localfile)
         print ret, info
-        return cls.success_with_result('http://'+qiniu_config.resource_domain+'/'+ret['key'])
+        return cls.success_with_result('http://'+qiniu_config.resource_domain+'/'+media_id+'.mp3')
