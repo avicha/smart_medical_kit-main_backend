@@ -8,7 +8,6 @@ SERVER_PORT = 8081
 SERVER_DEBUG = True
 SERVER_USE_RELOADER = True
 SERVER_USE_DEBUGGER = True
-
 # 默认缓存失效时间5分钟
 CACHE_DEFAULT_TIMEOUT = 300
 # 文件缓存条数500条
@@ -25,5 +24,5 @@ CACHE_REDIS_KEY_PREFIX = 'cache:'
 LOG_FILE_DIR = '../logs'
 LOG_FILE_WHEN = 'midnight'
 LOG_FILE_BACKUP_COUNT = 30
-
+# 存储配置
 STORAGE_FILE_DIR = '../storage'

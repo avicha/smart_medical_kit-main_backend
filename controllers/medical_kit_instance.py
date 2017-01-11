@@ -35,7 +35,7 @@ class MedicalKitInstanceController(MedicalKitInstanceCommonController):
         setting = data.get('setting')
         box_settings = data.get('box_settings')
         with database.transaction():
-            medical_kit_instance_setting = MedicalKitInstanceSettingModel.select().where(MedicalKitInstanceSettingModel.medical_kit_instance_id == medical_kit_instance_id).first()
+            medical_kit_instance_setting = MedicalKitInstanceSettingModel.select().where(MedicalKitInstanceSettingModel.medical_kit_instance_id == medical_kit_instance_id).for_update().first()
             if medical_kit_instance_setting:
                 medical_kit_instance_setting.prompt_sound = setting.get('prompt_sound')
                 medical_kit_instance_setting.save()
@@ -43,7 +43,7 @@ class MedicalKitInstanceController(MedicalKitInstanceCommonController):
                 MedicalKitInstanceSettingModel.create(medical_kit_instance_id=medical_kit_instance_id, prompt_sound=setting.get('prompt_sound'))
             for box_setting in box_settings:
                 if len(box_setting.get('schedule_times')):
-                    medical_kit_instance_box_setting = MedicalKitInstanceBoxSettingModel.select().where(MedicalKitInstanceBoxSettingModel.medical_kit_instance_id == medical_kit_instance_id, MedicalKitInstanceBoxSettingModel.box_index == box_setting.get('box_index')).first()
+                    medical_kit_instance_box_setting = MedicalKitInstanceBoxSettingModel.select().where(MedicalKitInstanceBoxSettingModel.medical_kit_instance_id == medical_kit_instance_id, MedicalKitInstanceBoxSettingModel.box_index == box_setting.get('box_index')).for_update().first()
                     if medical_kit_instance_box_setting:
                         medical_kit_instance_box_setting.medical_name = box_setting.get('medical_name')
                         medical_kit_instance_box_setting.medical_barcode = box_setting.get('medical_barcode')
