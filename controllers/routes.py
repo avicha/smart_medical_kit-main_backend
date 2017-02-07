@@ -2,7 +2,6 @@
 from controllers.medical_kit_instance import medical_kit_instance_blueprint, MedicalKitInstanceController
 from controllers.service import service_blueprint, ServiceController
 from controllers.medical import medical_blueprint, MedicalController
-from controllers.medical_kit_instance_setting import medical_kit_instance_setting_blueprint, MedicalKitInstanceSettingController
 
 
 def init_app(current_app):
